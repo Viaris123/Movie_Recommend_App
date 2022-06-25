@@ -1,8 +1,6 @@
-from flask import Flask, request, render_template, jsonify
-from model import MovesDB
+from flask import Flask, request, jsonify
+from component.model import MovesDB
 from configparser import ConfigParser
-import os
-
 
 config = ConfigParser()
 config.read('config/config.ini')
@@ -24,7 +22,7 @@ def recommend():
     user_id = int(request.args.get('user_id'))
     n = int(request.args.get('n'))
     result = mdb.recommend(user_id, n)
-    data = {r[0]: {'title': r[1], 'genre': r[2]} for r in result}
+    data = {count: {'id': r[0], 'title': r[1], 'genre': r[2]} for count, r in enumerate(result)}
     return jsonify(data)
     # return render_template('recommend.html', movie_list=result)
 
@@ -53,4 +51,4 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5000)
